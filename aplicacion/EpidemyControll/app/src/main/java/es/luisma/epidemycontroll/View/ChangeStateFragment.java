@@ -57,6 +57,8 @@ public class ChangeStateFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "Lat";
     private static final String ARG_PARAM2 = "Lon";
+    private static final String ARG_PARAM3 = "user";
+    private String username;
 
     private OnFragmentInteractionListener mListener;
     private Spinner dropdown;
@@ -78,11 +80,12 @@ public class ChangeStateFragment extends Fragment {
      * @return A new instance of fragment ChangeBlankFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChangeStateFragment newInstance(String param1, String param2) {
+    public static ChangeStateFragment newInstance(String param1, String param2,String param3) {
         ChangeStateFragment fragment = new ChangeStateFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM3, param3);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,6 +96,7 @@ public class ChangeStateFragment extends Fragment {
         if (getArguments() != null) {
             latitude = getArguments().getDouble(ARG_PARAM1);
             longitude = getArguments().getDouble(ARG_PARAM2);
+            username = getArguments().getString(ARG_PARAM3);
         }
     }
 
@@ -162,7 +166,7 @@ public class ChangeStateFragment extends Fragment {
             public void onComplete(@NonNull Task<DataReadResponse> response) {
                 Log.d(TAG, "onComplete()");
                 List<DataSet> dataSets = response.getResult().getDataSets();
-                int i = controller.updateData(dataSets.get(0), latitude,longitude, dropdown.getSelectedItem().toString(), details.getText().toString());
+                int i = controller.updateData(username,dataSets.get(0), latitude,longitude, dropdown.getSelectedItem().toString(), details.getText().toString());
                 makeToast(i);
             }
         });

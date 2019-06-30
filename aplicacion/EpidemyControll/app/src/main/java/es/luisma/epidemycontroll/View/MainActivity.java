@@ -59,8 +59,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
 
+
+        Bundle bundle = new Bundle();
+        bundle.putString("user", sp.getString("user", "Not Logged"));
+
         // Set the home as default
         Fragment fragment = new HomeFragment();
+        fragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().add(R.id.content, fragment).commit();
 
@@ -91,7 +96,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
         }else if(id == R.id.nav_home){
+            Bundle bundle = new Bundle();
+            bundle.putString("user", sp.getString("user", "Not Logged"));
             fragment = new HomeFragment();
+            fragment.setArguments(bundle);
         }else if(id == R.id.nav_profile){
             Bundle bundle = new Bundle();
             bundle.putString("user", sp.getString("user", "Not Logged"));

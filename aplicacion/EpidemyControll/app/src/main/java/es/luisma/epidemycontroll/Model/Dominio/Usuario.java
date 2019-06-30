@@ -11,13 +11,18 @@ public class Usuario {
     private int ADMIN;
     private int ID;
 
-    public Usuario(String USERNAME, String EMAIL, String PASSWORD, Date BIRTHDATE, int ADMIN, int ID) {
+
+
+    private int STATE;
+
+    public Usuario(String USERNAME, String EMAIL, String PASSWORD, Date BIRTHDATE, int ADMIN, int ID, int STATE) {
         this.USERNAME = USERNAME;
         this.EMAIL = EMAIL;
         this.PASSWORD = PASSWORD;
         this.BIRTHDATE = BIRTHDATE;
         this.ADMIN = ADMIN;
         this.ID = ID;
+        this.STATE = STATE;
     }
 
     public Usuario(String USERNAME, String EMAIL, String PASSWORD, Date BIRTHDATE) {
@@ -73,5 +78,13 @@ public class Usuario {
 
     public void setID(int ID) {
         this.ID = ID;
+    }
+
+    public int getSTATE() {
+        return STATE;
+    }
+
+    public void setSTATE(int STATE) {
+        this.STATE = STATE;
     }
 }

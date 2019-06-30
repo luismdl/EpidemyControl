@@ -48,6 +48,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import es.luisma.epidemycontroll.Controller.HomeController;
 import es.luisma.epidemycontroll.R;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -60,6 +61,8 @@ public class HomeFragment extends Fragment implements LocationListener {
     private static final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 12;
 
     private static final String TAG = "test";
+    private static final String ARG_PARAM1 = "user";
+    private String username;
     private Location mLastLocation;
 
     private TextView mEstadoText;
@@ -68,6 +71,8 @@ public class HomeFragment extends Fragment implements LocationListener {
     private TextView mLongitudeText;
     String provider;
     LocationManager locationManager;
+
+    private HomeController controller;
 
     private OnFragmentInteractionListener mListener;
 
@@ -83,6 +88,7 @@ public class HomeFragment extends Fragment implements LocationListener {
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -94,16 +100,27 @@ public class HomeFragment extends Fragment implements LocationListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            username = getArguments().getString(ARG_PARAM1);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
+        controller= new HomeController();
+        int state =controller.getState(username);
 
         mLatitudeText = (TextView) view.findViewById(R.id.homeLat);
         mLongitudeText = (TextView) view.findViewById(R.id.homeLon);
         mEstadoText = (TextView) view.findViewById(R.id.homeEstado);
+        if(state==0){
+            mEstadoText.setText("Sano");
+        } else if (state == 1) {
+            mEstadoText.setText("Enfermo");
+        }
         changeEstadoBtn = (Button) view.findViewById(R.id.homeChange);
 
         changeEstadoBtn.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +130,7 @@ public class HomeFragment extends Fragment implements LocationListener {
                                                    Bundle bundle = new Bundle();
                                                    bundle.putDouble("Lat", mLastLocation.getLatitude());
                                                    bundle.putDouble("Lon", mLastLocation.getLongitude());
+                                                   bundle.putString("user", username);
                                                    Fragment fragment = new ChangeStateFragment();
                                                    fragment.setArguments(bundle);
                                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();

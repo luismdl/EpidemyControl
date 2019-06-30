@@ -17,6 +17,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import es.luisma.epidemycontroll.Model.Dominio.Usuario;
@@ -63,9 +64,16 @@ public class UsersIntegration {
         return -1;
     }
 
+    public int changeState(String user, int state) throws ExecutionException, InterruptedException {
+        Usuario u = new Usuario(user,"","",new Date());
+        u.setSTATE(state);
+        Integer t = new changeStateHttp().execute(u).get();
+        if(t ==200){
+            return 0;
+        }
 
-
-
+        return -1;
+    }
 
 
     class GetHttp extends AsyncTask<URL, Void, StringBuffer> {
@@ -213,6 +221,54 @@ public class UsersIntegration {
                 con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("DELETE");
                 con.setDoOutput(true);
+
+                int status = con.getResponseCode();
+                return status;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+
+                con.disconnect();
+            }
+
+            return -1;
+        }
+
+        protected void onPostExecute(StringBuffer feed) {
+
+        }
+    }
+
+    class changeStateHttp extends AsyncTask<Usuario, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(Usuario... urls) {
+            HttpURLConnection con = null;
+            StringBuffer content = null;
+            try {
+                URL url = new URL(base +"usuario/"+urls[0].getUserName()+"/state");
+                con = (HttpURLConnection) url.openConnection();
+                con.setRequestProperty( "Content-Type", "application/json");
+                con.setRequestMethod("PUT");
+                con.setDoOutput(true);
+
+                Gson g = new Gson();
+                String user = g.toJson(urls[0], Usuario.class);
+                JsonElement je = g.fromJson(user, JsonElement.class);
+                JsonObject jo = je.getAsJsonObject();
+
+                java.text.SimpleDateFormat sdf =
+                        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String currentTime = sdf.format(urls[0].getBirthDate());
+                jo.addProperty("birthDate", currentTime);
+                user = jo.toString();
+                System.out.println(user);
+                OutputStream os = con.getOutputStream();
+                OutputStreamWriter osw = new OutputStreamWriter(os);
+                os.write(user.getBytes());
+                os.flush();
+                os.close();
 
                 int status = con.getResponseCode();
                 return status;
