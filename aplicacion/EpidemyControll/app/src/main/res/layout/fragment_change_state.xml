@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.ChangeStateFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cambiar Estado"
+            android:gravity="center_horizontal"
+            android:textSize="30dp"
+            android:layout_marginBottom="30px"
+            android:layout_marginTop="50px"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¿Cómo te encuentras?"
+            android:gravity="center_horizontal"
+            android:textSize="20dp"
+            android:layout_marginBottom="30px"
+            android:layout_marginTop="10px"/>
+
+        <Spinner
+            android:id="@+id/chngStateSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Detalles"
+            android:gravity="center_horizontal"
+            android:textSize="20dp"
+            android:layout_marginBottom="30px"
+            android:layout_marginTop="10px"/>
+
+        <EditText
+            android:id="@+id/chngStateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/chngStateBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Actualizar Estado"
+            android:layout_marginTop="30px"/>
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.ProfileFragment"
+    android:layout_gravity="center"
+    android:foregroundGravity="fill">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Perfil"
+            android:gravity="center_horizontal"
+            android:textSize="30dp"
+            android:layout_marginBottom="30px"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        >
+    <TextView
+        android:id="@+id/hintuser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hintUser"
+        android:layout_margin="20px"
+        android:textSize="18dp"/>
+
+        <TextView
+            android:id="@+id/profUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Data"
+            android:layout_margin="20px"
+            android:textSize="18dp"/>
+    </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            >
+            <TextView
+                android:id="@+id/hintemail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hintEmail"
+                android:layout_margin="20px"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:id="@+id/profMail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Data"
+                android:layout_margin="20px"
+                android:textSize="18dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            >
+            <TextView
+                android:id="@+id/hintbirthDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fecha Nacimiento"
+                android:layout_margin="20px"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:id="@+id/profBirth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Data"
+                android:layout_margin="20px"
+                android:textSize="18dp"/>
+        </LinearLayout>
+        <Button
+            android:id="@+id/profActua"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Actualizar Contraseña"
+            android:layout_marginTop="30px"/>
+    </LinearLayout>
+</FrameLayout>
