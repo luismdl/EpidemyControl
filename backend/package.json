@@ -1,18 +1,17 @@
 {
   "name": "users_backend",
   "version": "1.0.0",
-  "author": "Luis Martin",
+  "author": "Luis Martin de la Rubia",
   "description": "Servicio Rest",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "author": "Luis Martin de la Rubia",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "ibm_db": "^2.5.0",
+    "ibm_db": "^2.5.2",
     "mysql": "^2.16.0"
   },
   "engines": {
