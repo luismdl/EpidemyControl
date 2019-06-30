@@ -1,107 +1,64 @@
 var express = require('express');
 var app = express();
 const bodyParser = require('body-parser');
+const assert = require('assert');
 var router = express.Router();
-var ibmdb = require('ibm_db');
+
+const MongoClient = require('mongodb').MongoClient;
+const url = 'mongodb://192.168.1.93:27017';
+
+const dbName = 'TFM';
 
 
-var connstring ="DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50000;PROTOCOL=TCPIP;UID=tfh44607;PWD=80n9br3ws89d@pqx;";
+router.post("/state",function(req, res, next) {
+  var data = req.body;
+  data.timestamp = new Date(data.timestamp);
+  console.log(data);
+  const client = new MongoClient(url,{ useNewUrlParser: true });
+  client.connect(function(err) {
+    assert.equal(null, err);
+    console.log("Connected successfully to server");
 
-router.get('/usuario/:username', function(req, res, next) {
-  var userN = req.params.username;
+    const db = client.db(dbName);
 
-  ibmdb.open(connstring, function (err,conn) {
-    if (err) return console.log(err);
-    conn.query("SELECT * from TFMUSERS where username='"+userN +"'", function (err, data) {
-      if (err) console.log(err);
-      else{
-        console.log(data[0])
-        res.send(data[0]);
-      }
-      conn.close(function () {
-        console.log('done');
-      });
-    });
-  });
-});
-
-router.post('/usuario', function(req, res, next) {
-  var user = req.body;
-  console.log(user)
-  var query= "SELECT * from TFMUSERS where username='"+user.userName +"' and password='"+user.password+"'"
-  ibmdb.open(connstring, function (err,conn) {
-    if (err) return console.log(err);
-    conn.query(query, function (err, data) {
-      if (err) console.log(err);
-      else{
-        if(data.length>0){
-          res.sendStatus(409);
-        }else{
-          var insrt ="INSERT INTO TFMUSERS (userName, email, password, birthDate, admin) VALUES ('"+ user.userName+"', '"+user.email+"', '"+user.password+"', '"+user.birthDate+"', '0')"
-          conn.query(insrt, function (error, results, fields) {
-            if (error) throw error;
-            res.sendStatus(201);
-          })
+    if(data.state==1){
+      const collection = db.collection('epidemyControl');
+      collection.find({"state": 1,
+        "timestamp": 
+        {
+          $gte: new Date((new Date().getTime() -  (24 * 60 * 60 * 1000)))
+        },
+        "location":{
+          $geoWithin: { $center: [ data.location.coordinates , 1000 ] }
         }
-      } 
-      conn.close(function () {
-        console.log('done');
-      });
-    });
-  });
-});
-
-router.put('/usuario/:username', function(req, res, next) {
-  var user = req.body;
-  var userN = req.params.username;
-  var query= "SELECT * from TFMUSERS where username='"+userN+"'"
-  console.log(user)
-  ibmdb.open(connstring, function (err,conn) {
-    if (err) return console.log(err);
-    conn.query(query, function (err, data) {
-      if (err) console.log(err);
-      else{
-        if(data.length>0){
-          var updt ="UPDATE TFMUSERS SET password ='"+user.PASSWORD+"'where username='"+userN+"'"
-          conn.query(updt, function (error, results, fields) {
-            if (error) throw error;
-            res.sendStatus(200);
-          })
-        }else{
-          res.sendStatus(409);
+      }).toArray(function(err, docs) {
+        console.log("Docs encontrados: "+ docs.length)
+        if(docs.length>1){
+          var collAlerts =  db.collection('alerts');
+          collAlerts.insertOne({"location": data.location,
+            "timestamp": data.timestamp})
         }
-      } 
-      conn.close(function () {
-        console.log('done');
       });
-    });
-  });
-});
+    }
 
-router.delete('/usuario/:username', function(req, res, next) {
-  var userN = req.params.username;
-  var query= "SELECT * from TFMUSERS where username='"+userN+"'"
-  ibmdb.open(connstring, function (err,conn) {
-    if (err) return console.log(err);
-    conn.query(query, function (err, data) {
-      if (err) console.log(err);
-      else{
-        if(data.length>0){
-          var del ="DELETE FROM TFMUSERS where username='"+userN+"'";
-          conn.query(del, function (error, results, fields) {
-            if (error) throw error;
-            res.sendStatus(200);
-          })
-        }else{
-          res.sendStatus(409);
-        }
-      } 
-      conn.close(function () {
-        console.log('done');
-      });
+    insertDocuments(db,data, function(data) {
+      res.sendStatus(201);
+      client.close();
     });
   });
-});
+
+})
+
+const insertDocuments = function(db,data ,callback) {
+  // Get the documents collection
+  const collection = db.collection('epidemyControl');
+  // Insert some documents
+  collection.insertOne(data, function(err, result) {
+    console.log("Inserted document into the collection");
+    callback(result);
+  })
+}
+
 
 
 app.use(bodyParser.json());

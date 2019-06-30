@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import es.luisma.epidemycontroll.Model.DAO.UsersIntegration;
+import es.luisma.epidemycontroll.Model.DAO.changeStateIntegration;
 
 import static java.text.DateFormat.getTimeInstance;
 
@@ -23,9 +24,13 @@ public class StateController {
 
     private static final String TAG = "test";
 
-    private UsersIntegration model ;
+    private UsersIntegration modelUser ;
+    private changeStateIntegration modelState;
 
-    public StateController(){model = new UsersIntegration();}
+    public StateController(){
+        modelUser = new UsersIntegration();
+        modelState = new changeStateIntegration();
+    }
 
 
     public int updateData(String username, DataSet dataSet,Double lat, Double lon, String state, String details){
@@ -37,14 +42,15 @@ public class StateController {
             }else{
                 statei=1;
             }
-            i= model.changeState(username,statei);
+            i= modelUser.changeState(username,statei);
             JSONObject json = new JSONObject();
             json.put("username", username);
             java.text.SimpleDateFormat sdf =
                     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String currentTime = sdf.format(new Date());
-            json.put("timestamp", currentTime);
+            json.put("timestamp", new Date());
             json.put("state", statei);
+            json.put("details", details);
 
             JSONObject location = new JSONObject();
             location.put("type","Point");
@@ -57,6 +63,7 @@ public class StateController {
             heartBeats =dumpDataSet(dataSet,heartBeats);
             json.put("heartbeat",heartBeats);
             Log.i(TAG, json.toString());
+            modelState.save(json);
 
         }catch (Exception e){
             e.printStackTrace();
