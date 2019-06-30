@@ -49,6 +49,33 @@ router.post("/state",function(req, res, next) {
 
 })
 
+router.get("/alerts/:lat/:long",function(req, res, next) {
+  var lat = req.params.lat;
+  var lon = req.params.long;
+  const client = new MongoClient(url,{ useNewUrlParser: true });
+  client.connect(function(err) {
+    assert.equal(null, err);
+    console.log("Connected successfully to server");
+
+    const db = client.db(dbName);
+
+    const collection = db.collection('alerts');
+    collection.find({
+      "timestamp": 
+      {
+        $gte: new Date((new Date().getTime() -  (24 * 60 * 60 * 1000)))
+      },
+      "location":{
+        $geoWithin: { $center: [ [parseFloat(lat),parseFloat(lon)] , 1000 ] }
+      }
+    }).toArray(function(err, docs) {
+      console.log(docs)
+      res.send(docs);
+    });
+  });
+})
+
+
 const insertDocuments = function(db,data ,callback) {
   // Get the documents collection
   const collection = db.collection('epidemyControl');

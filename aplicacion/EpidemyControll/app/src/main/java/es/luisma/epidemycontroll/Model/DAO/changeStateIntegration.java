@@ -2,13 +2,18 @@ package es.luisma.epidemycontroll.Model.DAO;
 
 import android.os.AsyncTask;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
@@ -25,6 +30,53 @@ public class changeStateIntegration {
         }
         return -1;
 
+    }
+
+    public JSONArray getAlerts(Double lat, Double lon) throws ExecutionException, InterruptedException, JSONException {
+        ArrayList<Double> a = new ArrayList<>();
+        a.add(lat);
+        a.add(lon);
+        StringBuffer t = new GetHttp().execute(a).get();
+        String s = t.toString();
+        JSONArray json = new JSONArray(s);
+        return json;
+
+    }
+
+
+    class GetHttp extends AsyncTask<ArrayList<Double>, Void, StringBuffer> {
+
+        @Override
+        protected StringBuffer doInBackground(ArrayList<Double>... coords) {
+            HttpURLConnection con = null;
+            StringBuffer content = null;
+            try {
+                con = (HttpURLConnection) new URL(base +"alerts/"+coords[0].get(0)+"/"+coords[0].get(1)).openConnection();
+                con.setRequestMethod("GET");
+
+                int status = con.getResponseCode();
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                content = new StringBuffer();
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                con.disconnect();
+            }
+
+            return content;
+        }
+
+        protected void onPostExecute(StringBuffer feed) {
+
+        }
     }
 
     class PostHttp extends AsyncTask<JSONObject, Void, Integer> {

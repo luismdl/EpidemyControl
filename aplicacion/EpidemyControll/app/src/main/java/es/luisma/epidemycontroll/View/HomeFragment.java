@@ -21,10 +21,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 
@@ -42,7 +45,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +77,7 @@ public class HomeFragment extends Fragment implements LocationListener {
     private Button changeEstadoBtn;
     private TextView mLatitudeText;
     private TextView mLongitudeText;
+    private TableLayout mTableAlerts;
     String provider;
     LocationManager locationManager;
 
@@ -113,6 +122,7 @@ public class HomeFragment extends Fragment implements LocationListener {
         controller= new HomeController();
         int state =controller.getState(username);
 
+        mTableAlerts = (TableLayout) view.findViewById(R.id.homeAlerts);
         mLatitudeText = (TextView) view.findViewById(R.id.homeLat);
         mLongitudeText = (TextView) view.findViewById(R.id.homeLon);
         mEstadoText = (TextView) view.findViewById(R.id.homeEstado);
@@ -146,6 +156,67 @@ public class HomeFragment extends Fragment implements LocationListener {
         checkLocationPermission();
 
         return view;
+    }
+
+    private void getAlerts(){
+        try {
+            JSONArray json =controller.getAlerts(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+            for(int i =0;i<json.length();i++){
+                JSONObject obj = json.getJSONObject(i);
+
+                //TableRow t = new TableRow(getContext());
+                //TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                //t.setLayoutParams(lp);
+                //TextView tv = new TextView(getContext());
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                java.text.SimpleDateFormat sdf2 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                String currentTime = sdf.format(sdf2.parse(obj.getString("timestamp")));
+                //tv.setLayoutParams(new TableRow.LayoutParams(0));
+                //tv.setWidth(100);
+                //tv.setGravity(Gravity.CENTER);
+                //tv.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+                //tv.setText(currentTime);
+                DecimalFormat df = new DecimalFormat("#.##");
+                /*TextView tv2 = new TextView(getContext());
+                //tv2.setWidth(30);
+                //tv2.setLayoutParams(new TableRow.LayoutParams(1));
+                //tv2.setGravity(Gravity.CENTER);
+                //tv2.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+                tv2.setText(df.format(Double.parseDouble(obj.getJSONObject("location").getJSONArray("coordinates").get(1).toString())));
+                TextView tv3 = new TextView(getContext());
+                //tv3.setLayoutParams(new TableRow.LayoutParams(2));
+                //tv3.setWidth(30);
+                //tv3.setGravity(Gravity.CENTER);
+                //tv3.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+                tv3.setText(df.format(Double.parseDouble(obj.getJSONObject("location").getJSONArray("coordinates").get(0).toString())));
+                t.addView(tv);
+                t.addView(tv2);
+                t.addView(tv3);
+                mTableAlerts.addView(t);*/
+
+
+
+                LayoutInflater inflater = getLayoutInflater();
+                TableRow tr = (TableRow)inflater.inflate(R.layout.table_row, mTableAlerts, false);
+
+                // Add First Column
+                TextView tvTitle = (TextView)tr.findViewById(R.id.tvFecha);
+                tvTitle.setText(currentTime);
+
+                TextView tvTit = (TextView)tr.findViewById(R.id.tvLat);
+                tvTit.setText(df.format(Double.parseDouble(obj.getJSONObject("location").getJSONArray("coordinates").get(1).toString())));
+
+                // Add the 3rd Column
+                TextView tvValue = (TextView)tr.findViewById(R.id.tvLon);
+                tvValue.setText(df.format(Double.parseDouble(obj.getJSONObject("location").getJSONArray("coordinates").get(0).toString())));
+
+                mTableAlerts.addView(tr);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -241,11 +312,14 @@ public class HomeFragment extends Fragment implements LocationListener {
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_LOCATION_REQUEST_CODE);
             }
+
             return false;
         } else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 1, this);
+
             return true;
         }
+
     }
 
     @Override
@@ -255,7 +329,7 @@ public class HomeFragment extends Fragment implements LocationListener {
         Double lng = location.getLongitude();
         mLatitudeText.setText(lat.toString());
         mLongitudeText.setText(lng.toString());
-
+        getAlerts();
         location.getAccuracy();
     }
 

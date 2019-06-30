@@ -89,6 +89,50 @@
                 android:layout_margin="20px"
                 android:textSize="18dp"/>
         </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alertas en tu zona"
+            android:gravity="center_horizontal"
+            android:textSize="30dp"
+            android:layout_marginBottom="30px"/>
+
+
+
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/displayLinear"
+            android:orientation="vertical" >
+
+            <TableRow>
+                <TextView android:text="Fecha alerta"
+                    android:layout_width="100dp"
+                    android:layout_column="0"
+                    android:layout_weight="1" />
+                <TextView android:text="Latitud"
+                    android:layout_width="30dp"
+                    android:layout_column="1"
+                    android:layout_weight="1">
+                </TextView>
+                <TextView android:text="Longitud"
+                    android:layout_width="30dp"
+                    android:layout_column="2"
+                    android:layout_weight="1">
+                </TextView>
+            </TableRow>
+            <ScrollView android:layout_height="240dp">
+                <TableLayout android:id="@+id/homeAlerts"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+
+
+
+                </TableLayout>
+            </ScrollView>
+
+        </TableLayout>
 
     </LinearLayout>
 
