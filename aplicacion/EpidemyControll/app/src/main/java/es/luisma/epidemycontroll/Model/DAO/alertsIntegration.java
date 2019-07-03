@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
-public class changeStateIntegration {
+public class alertsIntegration {
 
     private String base = "http://10.0.2.2:3000/";
 
-    public changeStateIntegration(){}
+    public alertsIntegration(){}
 
     public int save(JSONObject data) throws ExecutionException, InterruptedException {
         int t = new PostHttp().execute(data).get();
@@ -37,6 +37,21 @@ public class changeStateIntegration {
         a.add(lat);
         a.add(lon);
         StringBuffer t = new GetHttp().execute(a).get();
+        String s = t.toString();
+        JSONArray json = new JSONArray(s);
+        return json;
+
+    }
+
+    public JSONArray getAlerts() throws ExecutionException, InterruptedException, JSONException {
+        StringBuffer t = new Get2Http().execute().get();
+        String s = t.toString();
+        JSONArray json = new JSONArray(s);
+        return json;
+
+    }
+    public JSONArray getAlerts(String user) throws ExecutionException, InterruptedException, JSONException {
+        StringBuffer t = new Get3Http().execute(user).get();
         String s = t.toString();
         JSONArray json = new JSONArray(s);
         return json;
@@ -79,6 +94,75 @@ public class changeStateIntegration {
         }
     }
 
+    class Get2Http extends AsyncTask<Void, Void, StringBuffer> {
+
+        @Override
+        protected StringBuffer doInBackground(Void... coords) {
+            HttpURLConnection con = null;
+            StringBuffer content = null;
+            try {
+                con = (HttpURLConnection) new URL(base +"alerts").openConnection();
+                con.setRequestMethod("GET");
+
+                int status = con.getResponseCode();
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                content = new StringBuffer();
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                con.disconnect();
+
+            }
+
+            return content;
+        }
+
+        protected void onPostExecute(StringBuffer feed) {
+
+        }
+    }
+    class Get3Http extends AsyncTask<String, Void, StringBuffer> {
+
+        @Override
+        protected StringBuffer doInBackground(String... name) {
+            HttpURLConnection con = null;
+            StringBuffer content = null;
+            try {
+                con = (HttpURLConnection) new URL(base +"state/"+name[0]).openConnection();
+                con.setRequestMethod("GET");
+
+                int status = con.getResponseCode();
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                content = new StringBuffer();
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                con.disconnect();
+
+            }
+
+            return content;
+        }
+
+        protected void onPostExecute(StringBuffer feed) {
+
+        }
+    }
+
     class PostHttp extends AsyncTask<JSONObject, Void, Integer> {
 
         @Override
@@ -98,6 +182,8 @@ public class changeStateIntegration {
                 osw.flush();
 
                 int status = con.getResponseCode();
+                os.close();
+                osw.close();
                 return status;
 
             } catch (IOException e) {

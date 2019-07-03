@@ -6,13 +6,13 @@ import es.luisma.epidemycontroll.Model.DAO.UsersIntegration;
 import es.luisma.epidemycontroll.Model.DAO.alertsIntegration;
 import es.luisma.epidemycontroll.Model.Dominio.Usuario;
 
-public class HomeController {
+public class AlertsController {
 
     private UsersIntegration model;
 
     private alertsIntegration modelState;
 
-    public HomeController(){model = new UsersIntegration();
+    public AlertsController(){model = new UsersIntegration();
         modelState = new alertsIntegration();}
 
     public int getState(String user){
@@ -26,9 +26,18 @@ public class HomeController {
         }
         return -1;
     }
-    public JSONArray getAlerts(Double lat,Double lon){
+    public JSONArray getAlerts(){
         try {
-            return modelState.getAlerts(lat,lon);
+            return modelState.getAlerts();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public JSONArray getAlerts(String user){
+        try {
+            return modelState.getAlerts(user);
         } catch (Exception e) {
             e.printStackTrace();
         }

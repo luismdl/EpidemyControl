@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import es.luisma.epidemycontroll.Model.DAO.UsersIntegration;
-import es.luisma.epidemycontroll.Model.DAO.changeStateIntegration;
+import es.luisma.epidemycontroll.Model.DAO.alertsIntegration;
 
 import static java.text.DateFormat.getTimeInstance;
 
@@ -25,11 +25,11 @@ public class StateController {
     private static final String TAG = "test";
 
     private UsersIntegration modelUser ;
-    private changeStateIntegration modelState;
+    private alertsIntegration modelState;
 
     public StateController(){
         modelUser = new UsersIntegration();
-        modelState = new changeStateIntegration();
+        modelState = new alertsIntegration();
     }
 
 

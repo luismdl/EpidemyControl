@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EpidemyControll</string>
+    <string name="app_name">EpidemyControl</string>
     <string name="logodesc">LogoAPP</string>
     <string name="hintUser">Username</string>
     <string name="hintPass">Password</string>
@@ -9,7 +9,7 @@
     <string name="hintEmail">Email</string>
     <string name="registerBirth">Birthday</string>
     <string name="registerBtn">Registrarse</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">EpidemyControl</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>

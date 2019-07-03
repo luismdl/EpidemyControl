@@ -72,6 +72,7 @@ public class HomeFragment extends Fragment implements LocationListener {
     private static final String ARG_PARAM1 = "user";
     private String username;
     private Location mLastLocation;
+    private boolean listLoaded = false;
 
     private TextView mEstadoText;
     private Button changeEstadoBtn;
@@ -155,44 +156,20 @@ public class HomeFragment extends Fragment implements LocationListener {
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         checkLocationPermission();
 
+
         return view;
     }
 
     private void getAlerts(){
+
         try {
             JSONArray json =controller.getAlerts(mLastLocation.getLatitude(),mLastLocation.getLongitude());
             for(int i =0;i<json.length();i++){
                 JSONObject obj = json.getJSONObject(i);
-
-                //TableRow t = new TableRow(getContext());
-                //TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-                //t.setLayoutParams(lp);
-                //TextView tv = new TextView(getContext());
                 java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                 java.text.SimpleDateFormat sdf2 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 String currentTime = sdf.format(sdf2.parse(obj.getString("timestamp")));
-                //tv.setLayoutParams(new TableRow.LayoutParams(0));
-                //tv.setWidth(100);
-                //tv.setGravity(Gravity.CENTER);
-                //tv.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
-                //tv.setText(currentTime);
                 DecimalFormat df = new DecimalFormat("#.##");
-                /*TextView tv2 = new TextView(getContext());
-                //tv2.setWidth(30);
-                //tv2.setLayoutParams(new TableRow.LayoutParams(1));
-                //tv2.setGravity(Gravity.CENTER);
-                //tv2.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
-                tv2.setText(df.format(Double.parseDouble(obj.getJSONObject("location").getJSONArray("coordinates").get(1).toString())));
-                TextView tv3 = new TextView(getContext());
-                //tv3.setLayoutParams(new TableRow.LayoutParams(2));
-                //tv3.setWidth(30);
-                //tv3.setGravity(Gravity.CENTER);
-                //tv3.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
-                tv3.setText(df.format(Double.parseDouble(obj.getJSONObject("location").getJSONArray("coordinates").get(0).toString())));
-                t.addView(tv);
-                t.addView(tv2);
-                t.addView(tv3);
-                mTableAlerts.addView(t);*/
 
 
 
@@ -211,7 +188,7 @@ public class HomeFragment extends Fragment implements LocationListener {
                 tvValue.setText(df.format(Double.parseDouble(obj.getJSONObject("location").getJSONArray("coordinates").get(0).toString())));
 
                 mTableAlerts.addView(tr);
-
+                listLoaded=true;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -264,6 +241,7 @@ public class HomeFragment extends Fragment implements LocationListener {
 
                         //Request location updates:
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 1, this);
+
                     }
 
                 } else {
@@ -329,8 +307,10 @@ public class HomeFragment extends Fragment implements LocationListener {
         Double lng = location.getLongitude();
         mLatitudeText.setText(lat.toString());
         mLongitudeText.setText(lng.toString());
-        getAlerts();
         location.getAccuracy();
+        if(!listLoaded){
+            getAlerts();
+        }
     }
 
     @Override

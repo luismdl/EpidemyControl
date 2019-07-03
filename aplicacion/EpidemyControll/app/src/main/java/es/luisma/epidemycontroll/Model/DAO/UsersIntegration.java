@@ -141,6 +141,7 @@ public class UsersIntegration {
                 os.write(user.getBytes());
                 os.flush();
                 os.close();
+                osw.close();
 
                 int status = con.getResponseCode();
                 return status;
@@ -191,7 +192,7 @@ public class UsersIntegration {
                 os.write(user.getBytes());
                 os.flush();
                 os.close();
-
+                osw.close();
                 int status = con.getResponseCode();
                 return status;
 
@@ -269,7 +270,7 @@ public class UsersIntegration {
                 os.write(user.getBytes());
                 os.flush();
                 os.close();
-
+                osw.close();
                 int status = con.getResponseCode();
                 return status;
 

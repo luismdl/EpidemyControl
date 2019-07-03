@@ -1,32 +1,19 @@
 package es.luisma.epidemycontroll.View;
 
-import android.Manifest;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.MenuItemImpl;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 
 import es.luisma.epidemycontroll.R;
 
@@ -107,6 +94,13 @@ public class MainActivity extends AppCompatActivity
             fragment.setArguments(bundle);
         }else if (id == R.id.nav_delete){
             fragment = new DeleteFragment();
+        }else if(id == R.id.nav_alerts){
+            fragment = new AlertsFragment();
+        }else if(id == R.id.nav_misAlerts){
+            Bundle bundle = new Bundle();
+            bundle.putString("user", sp.getString("user", "Not Logged"));
+            fragment = new EventsFragment();
+            fragment.setArguments(bundle);
         }
 
 
