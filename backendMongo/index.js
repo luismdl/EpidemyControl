@@ -5,6 +5,7 @@ const assert = require('assert');
 var router = express.Router();
 
 const MongoClient = require('mongodb').MongoClient;
+var ObjectID = require('mongodb').ObjectID;
 const url = 'mongodb://192.168.1.93:27017';
 
 const dbName = 'TFM';
@@ -33,7 +34,7 @@ router.post("/state",function(req, res, next) {
         }
       }).toArray(function(err, docs) {
         console.log("Docs encontrados: "+ docs.length)
-        if(docs.length>1){
+        if(docs.length>10){
           var collAlerts =  db.collection('alerts');
           collAlerts.insertOne({"location": data.location,
             "timestamp": data.timestamp})
@@ -110,6 +111,23 @@ router.get("/state/:userName",function(req, res, next) {
     }).toArray(function(err, docs) {
       console.log(docs)
       res.send(docs);
+    });
+  });
+})
+router.get("/state/id/:id",function(req, res, next) {
+  var id = req.params.id;
+  console.log(id)
+  const client = new MongoClient(url,{ useNewUrlParser: true });
+  client.connect(function(err) {
+    assert.equal(null, err);
+    console.log("Connected successfully to server");
+    const db = client.db(dbName);
+    const collection = db.collection('epidemyControl');
+    collection.find({
+      "_id": new ObjectID(id)
+    }).toArray(function(err, docs) {
+      console.log(docs)
+      res.send(docs[0]);
     });
   });
 })

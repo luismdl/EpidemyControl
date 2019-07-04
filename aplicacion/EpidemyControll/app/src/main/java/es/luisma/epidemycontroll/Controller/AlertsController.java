@@ -1,6 +1,7 @@
 package es.luisma.epidemycontroll.Controller;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import es.luisma.epidemycontroll.Model.DAO.UsersIntegration;
 import es.luisma.epidemycontroll.Model.DAO.alertsIntegration;
@@ -38,6 +39,15 @@ public class AlertsController {
     public JSONArray getAlerts(String user){
         try {
             return modelState.getAlerts(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public JSONObject getStateId(String id){
+        try {
+            return modelState.getState(id);
         } catch (Exception e) {
             e.printStackTrace();
         }

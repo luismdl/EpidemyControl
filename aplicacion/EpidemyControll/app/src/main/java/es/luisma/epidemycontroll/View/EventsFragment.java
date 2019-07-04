@@ -4,9 +4,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -84,6 +86,7 @@ public class EventsFragment extends Fragment {
             JSONArray json = controller.getAlerts(username);
             String[] nameArray =new String[json.length()];
             String[] infoArray=new String[json.length()];
+            final String[] ids=new String[json.length()];
             for(int i =0;i<json.length();i++){
                 JSONObject obj = json.getJSONObject(i);
                 java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -95,13 +98,30 @@ public class EventsFragment extends Fragment {
                 }
                 nameArray[i] =estado;
                 infoArray[i] =currentTime;
+                ids[i] = obj.getString("_id");
 
             }
-            whatever = new EventListAdapter(getActivity(), nameArray, infoArray);
+            whatever = new EventListAdapter(getActivity(), nameArray, infoArray,ids);
             View view = inflater.inflate(R.layout.fragment_events, container, false);
 
             listView = view.findViewById(R.id.eventList);
             listView.setAdapter(whatever);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position,
+                                        long id) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id", ids[position]);
+                    Fragment fragment = new EventDetailsFragment();
+                    fragment.setArguments(bundle);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content, fragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+
+                }
+            });
             return view;
         } catch (Exception e) {
             e.printStackTrace();

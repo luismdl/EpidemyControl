@@ -21,14 +21,17 @@ public class EventListAdapter extends ArrayAdapter {
 
     //to store the list of countries
     private final String[] infoArray;
+    //to store the list of countries
+    private final String[] ids;
 
 
-    public EventListAdapter(Activity context, String[] nameArrayParam, String[] infoArrayParam){
+    public EventListAdapter(Activity context, String[] nameArrayParam, String[] infoArrayParam,String[] ids){
 
         super(context, R.layout.eventlist_line , nameArrayParam);
         this.context=context;
         this.nameArray = nameArrayParam;
         this.infoArray = infoArrayParam;
+        this.ids = ids;
 
 
     }
@@ -44,6 +47,7 @@ public class EventListAdapter extends ArrayAdapter {
         //this code sets the values of the objects to values from the arrays
         nameTextField.setText(nameArray[position]);
         infoTextField.setText(infoArray[position]);
+
 
         return rowView;
 

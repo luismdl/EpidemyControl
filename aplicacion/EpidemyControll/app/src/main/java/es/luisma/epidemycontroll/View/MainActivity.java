@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if(sp.getInt("admin", 0)==1){
             Menu m = navigationView.getMenu();
-            m.getItem(3).setVisible(true);
+            m.getItem(4).setVisible(true);
         }
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
@@ -80,9 +80,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment = null;
-        if (id == R.id.nav_settings) {
-            fragment = new SettingsFragment();
-        }else if(id == R.id.nav_home){
+        if(id == R.id.nav_home){
             Bundle bundle = new Bundle();
             bundle.putString("user", sp.getString("user", "Not Logged"));
             fragment = new HomeFragment();

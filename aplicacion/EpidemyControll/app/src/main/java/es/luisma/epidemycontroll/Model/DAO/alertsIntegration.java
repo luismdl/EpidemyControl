@@ -58,6 +58,14 @@ public class alertsIntegration {
 
     }
 
+    public JSONObject getState(String id) throws ExecutionException, InterruptedException, JSONException {
+        StringBuffer t = new Get4Http().execute(id).get();
+        String s = t.toString();
+        JSONObject json = new JSONObject(s);
+        return json;
+
+    }
+
 
     class GetHttp extends AsyncTask<ArrayList<Double>, Void, StringBuffer> {
 
@@ -136,6 +144,41 @@ public class alertsIntegration {
             StringBuffer content = null;
             try {
                 con = (HttpURLConnection) new URL(base +"state/"+name[0]).openConnection();
+                con.setRequestMethod("GET");
+
+                int status = con.getResponseCode();
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                content = new StringBuffer();
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                con.disconnect();
+
+            }
+
+            return content;
+        }
+
+        protected void onPostExecute(StringBuffer feed) {
+
+        }
+    }
+
+    class Get4Http extends AsyncTask<String, Void, StringBuffer> {
+
+        @Override
+        protected StringBuffer doInBackground(String... id) {
+            HttpURLConnection con = null;
+            StringBuffer content = null;
+            try {
+                con = (HttpURLConnection) new URL(base +"state/id/"+id[0]).openConnection();
                 con.setRequestMethod("GET");
 
                 int status = con.getResponseCode();
